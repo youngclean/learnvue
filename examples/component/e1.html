@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+</head>
+
+<body>
+  <h3>动态挂接</h3>
+  <p>多个组件可以使用同一个挂载点，然后动态地在它们之间切换。元素component可以用于此场景，修改属性is即可达成动态切换的效果</p>
+  <p>假设我们有三个组件home、posts、archives，我们可以设置一个定时器，每隔2秒修改一次current，把三个组件的逐个切入到当前挂接点</p>
+  <div id="app">
+    <component v-bind:is="current"></component>
+  </div>
+</body>
+<script src="../../vue.js"></script>
+<script>
+  //创建vue实例
+  var app=new Vue({
+    //局部注册组件
+     components:{
+       home:{template:'<h1>home</h1>'},
+       posts:{template:'<h1>posts</h1>'},
+       archive:{template:'<h1>archive</h1>'}
+     },
+     data:{
+        current:'archive',
+        i:0,
+        b:['home','posts','archive']
+     },
+     methods:{
+       a(){
+        this.i=this.i%3
+        this.current = this.b[this.i];
+        this.i++
+        setTimeout(this.a,2000)
+       }
+     },
+     mounted(){
+      setTimeout(this.a,2000)
+     }
+
+  });
+  //Vue实例自身的内容
+  //它对HTML的关联
+  app.$mount('#app');
+</script>
+</html>

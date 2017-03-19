@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+</head>
+
+<body>
+  <div id="app">
+    <h3>todo app</h3>
+    <input v-model="todo"/>
+    <button @click="add">add</button>
+    <ul>
+      <li v-for="(item, index) in items">{{item}}
+        <button @click="rm(index)">X</button></li>
+    </ul>
+  </div>
+</body>
+<script src="../vue.js"></script>
+<script>
+//创建vue实例
+  var app=new Vue({
+    // el: '#app',
+     data:{
+        todo: '',
+        items:['item 1','item 2','item 3']
+     },
+     methods:{
+        rm(i){this.items.splice(i,1)},
+        add(){
+          if(this.todo){
+             this.items.push(this.todo);
+             this.todo='';
+          }
+        }
+     }
+  });
+  //Vue实例自身的内容
+  //它对HTML的关联
+  app.$mount('#app');
+</script>
+</html>

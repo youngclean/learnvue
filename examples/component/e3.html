@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+</head>
+
+<body>
+  <h3>使用事件</h3>
+  <p>每个Vue实例都有事件接口，组件是一个具体的Vue实例，因此也有事件接口，用来发射和接收事件，具体事件如下：
+
+发射事件:$on(event)
+
+接收事件:$emit(event)
+</p>
+<p>有一个父组件绑定在#app上，还有两个按钮组件，点击任何一个按钮让自己的计数器加1，并且让父组件内的一个计数器加1。</p>
+  <div id="app">
+  <count ref="b1"></count>
+  <count ref="b2"></count>
+  <br>
+  {{total}}
+  </div>
+  <p>在父组件的绑定完成钩子函数（函数mounted）内，通过$on方法监听inc事件到this.inc。在子组件count内，完成对自己的计数器count加1后随即使用$emit发射事件给父组件。另外，我们使用了v-ref指令为每一个子组件一个引用标识符</p>
+  <p>除了在js代码内通过$on方法设置监听代码外，也可以使用指令v-on在HTML内达成类似效果：</p>
+    <div id="app1">
+  {{ total }}
+  <count v-on:inc='inc'></count>
+  <count v-on:inc='inc'></count>
+</div>
+<p>这种方法的好处是：
+
+省下了ref属性的声明，因为不必在代码中引用组件。
+
+在HTML就可以一目了然地看到监听的是哪个子组件。</p>
+</body>
+<script src="../../vue.js"></script>
+<script>
+//创建count组件
+Vue.component('count',{
+  template:'<button @click="inc">{{count}}</button>',
+  data(){
+    return {count:0}
+  },
+  methods:{
+    inc(){
+      this.count++;
+      this.$emit('inc')
+    }
+  }
+});
+  //创建vue实例
+  var app=new Vue({
+     el:'#app',
+     data:{
+        total:0
+     },
+     mounted(){
+      this.$refs.b1.$on('inc',this.inc)
+      this.$refs.b2.$on('inc',this.inc)
+     },
+     methods:{
+       inc(){
+         this.total++
+       }
+     }
+  });
+new Vue({
+  el: '#app1',
+  data: {total: 0},
+  methods: {
+    inc: function () {
+      this.total += 1
+    }
+  }
+})
+</script>
+</html>

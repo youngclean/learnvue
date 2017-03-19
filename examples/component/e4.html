@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+</head>
+
+<body>
+<h3>组件通讯</h3>
+<p>整个app分为三个组件</p>
+  <div id="app1">
+    <h3>todo app</h3>
+    <new-todo></new-todo>
+      <todo-list></todo-list>
+  </div>
+</body>
+<script src="../../vue.js"></script>
+<script>
+ var eventHub =new Vue( {
+    data(){
+      return{
+        todos:['A','B','C']
+      }
+    },
+    created: function () {
+      this.$on('add', this.addTodo)
+      this.$on('delete', this.deleteTodo)
+    },
+    beforeDestroy: function () {
+      this.$off('add', this.addTodo)
+      this.$off('delete', this.deleteTodo)
+    },
+    methods: {
+      addTodo: function (newTodo) {
+        console.log(newTodo)
+        this.todos.push(newTodo)
+      },
+      deleteTodo: function (i) {
+        this.todos.splice(i,1)
+      }
+    }
+  })
+  var newTodo = {
+        template:'<div><input type="text" autofocus v-model="newtodo"/><button @click="add">add</button></div>',
+        data(){
+          return{
+            newtodo:''
+          }
+        },
+        methods:{
+          add:function(){
+            eventHub.$emit('add', this.newtodo)
+            this.newtodo = ''
+          }
+      }
+  }
+  var todoList = {
+      template:'<ul> \
+        <li v-for="(item,index) in items">{{item}} \
+          <button @click="rm(index)">X</button></li> \
+        </ul>',
+      data(){
+        console.log(eventHub.todos)
+        return{
+
+          items:eventHub.todos
+        }
+      },
+      methods:{
+       rm:function(i){
+          eventHub.$emit('delete', i)
+        }
+      }
+  }
+//创建vue实例
+  var app=new Vue({
+    el: '#app1',
+    components:{
+      newTodo:newTodo,
+      todoList:todoList
+    }
+
+
+  });
+
+</script>
+</html>

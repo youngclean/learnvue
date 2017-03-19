@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+</head>
+
+<body>
+  <h3>引用组件</h3>
+  <p>一个父组件内常常有多个子组件，有时候为了个别处理，需要在父组件代码内引用子组件实例。Vue.js可以通过指令v-ref设置组件的标识符，并在代码内通过$refs+标识符来引用特定组件。</p>
+  <p>有三个按钮，其中前两个按钮被点击时，每次对自己的计数器累加1；另外一个按钮可以取得前两个按钮的计数器值，并加总后设置{{total}}的值。此时在第三个按钮的事件代码中，就需要引用前两个按钮的实例。</p>
+  <div id="app">
+  <count ref="b1"></count>
+  <count ref="b2"></count>
+  <button @click="value">总和</button>
+  <br>
+  {{total}}
+  </div>
+</body>
+<script src="../../vue.js"></script>
+<script>
+//创建count组件
+Vue.component('count',{
+  template:'<button @click="inc">{{count}}</button>',
+  data(){
+    return {count:0}
+  },
+  methods:{
+    inc(){
+      this.count++
+    }
+  }
+});
+  //创建vue实例
+  var app=new Vue({
+     el:'#app',
+     data:{
+        total:0
+     },
+     methods:{
+       value(){
+         this.total=this.$refs.b1.count + this.$refs.b2.count
+       }
+     }
+  });
+
+</script>
+</html>
